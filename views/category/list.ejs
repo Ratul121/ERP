@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Categories</h1>
+        <button class="btn btn-success mb-3" data-toggle="modal" data-target="#addCategoryModal">Add Category</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% categories.forEach(category => { %>
+                    <tr>
+                        <td><%= category.name %></td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editCategoryModal<%= category._id %>">Edit</button>
+                            <form action="/categories/<%= category._id %>?_method=DELETE" method="POST" class="d-inline">
+                                <button class="btn btn-danger btn-sm">Delete</button>
+                            </form>
+                            <button class="btn btn-info btn-sm" data-toggle="modal" data-target="#addSubcategoryModal<%= category._id %>">Add Subcategory</button>
+                        </td>
+                    </tr>
+                    <% category.subcategories.forEach(subcategory => { %>
+                        <tr>
+                            <td>&emsp;-- <%= subcategory.name %></td>
+                            <td>
+                                <form action="/categories/<%= category._id %>/subcategories/<%= subcategory._id %>?_method=DELETE" method="POST" class="d-inline">
+                                    <button class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="/categories" method="POST">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Category Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <% categories.forEach(category => { %>
+        <!-- Edit Category Modal -->
+        <div class="modal fade" id="editCategoryModal<%= category._id %>" tabindex="-1" role="dialog" aria-labelledby="editCategoryModalLabel<%= category._id %>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="/categories/<%= category._id %>?_method=PUT" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editCategoryModalLabel<%= category._id %>">Edit Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Category Name</label>
+                                <input type="text" class="form-control" id="name" name="name" value="<%= category.name %>" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Update Category</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Subcategory Modal -->
+        <div class="modal fade" id="addSubcategoryModal<%= category._id %>" tabindex="-1" role="dialog" aria-labelledby="addSubcategoryModalLabel<%= category._id %>" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <form action="/categories/<%= category._id %>/subcategories" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addSubcategoryModalLabel<%= category._id %>">Add Subcategory</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="name">Subcategory Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Subcategory</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% }) %>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
